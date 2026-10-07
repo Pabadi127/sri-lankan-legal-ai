@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # Contributed by K.S. Navodya (navo4 - D/BIS/24/0040)
+=======
+>>>>>>> d76b665f7a13cda2feb5d779eb3d3c3ab0b794d2
 """
 siamese_model.py
 Pure NumPy implementation of the Siamese Neural Network for Legal Semantic Similarity.

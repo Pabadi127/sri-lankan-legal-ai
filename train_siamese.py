@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # Contributed by K.S. Navodya (navo4 - D/BIS/24/0040)
+=======
+>>>>>>> d76b665f7a13cda2feb5d779eb3d3c3ab0b794d2
 """
 train_siamese.py
 Trains the Siamese Neural Network on 3,000 Sri Lankan criminal case-fact contrastive pairs
