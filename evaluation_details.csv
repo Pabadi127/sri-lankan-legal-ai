@@ -1,0 +1,31 @@
+Query ID,Factual Query,Top-1 Relevant,Precision@5,Hit@5,Reciprocal Rank,Model
+BQ-01,Accused intercepted at Katunayake airport carrying heroin conceal...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-02,Murder conviction under Section 296 based solely on circumstantia...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-03,Public surveyor demanding gratification or bribe from land permit...,Yes,60.0%,Hit,1.00,TF-IDF Baseline
+BQ-04,Magistrate made remand order detaining suspect without recording ...,Yes,60.0%,Hit,1.00,TF-IDF Baseline
+BQ-05,Accused made unsworn statement from the dock instead of giving ev...,No,0.0%,Miss,0.00,TF-IDF Baseline
+BQ-06,Trial proceeded against accused without formal charge being frame...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-07,Undergoing weapons training as a member of an illegal organizatio...,Yes,20.0%,Hit,1.00,TF-IDF Baseline
+BQ-08,Decoy used by price control inspector to purchase goods with mark...,No,20.0%,Hit,0.20,TF-IDF Baseline
+BQ-09,Robbery of gold jewellery and murder forming part of the same tra...,Yes,60.0%,Hit,1.00,TF-IDF Baseline
+BQ-10,Police officer assaulted and removed in military vehicle during c...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-11,Questioned handwriting document forwarded to Examiner of Question...,Yes,40.0%,Hit,1.00,TF-IDF Baseline
+BQ-12,Trial judge failed to direct jury on matters in favour of accused...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-13,Search warrant issued by Magistrate on credible information chall...,Yes,100.0%,Hit,1.00,TF-IDF Baseline
+BQ-14,Corroboration of mother evidence in maintenance proceedings conce...,Yes,40.0%,Hit,1.00,TF-IDF Baseline
+BQ-15,Application for revision in Court of Appeal against order of High...,Yes,60.0%,Hit,1.00,TF-IDF Baseline
+BQ-01,Accused intercepted at Katunayake airport carrying heroin conceal...,Yes,60.0%,Hit,1.00,Siamese Neural Network
+BQ-02,Murder conviction under Section 296 based solely on circumstantia...,No,40.0%,Hit,0.50,Siamese Neural Network
+BQ-03,Public surveyor demanding gratification or bribe from land permit...,Yes,100.0%,Hit,1.00,Siamese Neural Network
+BQ-04,Magistrate made remand order detaining suspect without recording ...,Yes,60.0%,Hit,1.00,Siamese Neural Network
+BQ-05,Accused made unsworn statement from the dock instead of giving ev...,No,0.0%,Miss,0.00,Siamese Neural Network
+BQ-06,Trial proceeded against accused without formal charge being frame...,No,0.0%,Miss,0.00,Siamese Neural Network
+BQ-07,Undergoing weapons training as a member of an illegal organizatio...,No,0.0%,Miss,0.00,Siamese Neural Network
+BQ-08,Decoy used by price control inspector to purchase goods with mark...,No,0.0%,Miss,0.00,Siamese Neural Network
+BQ-09,Robbery of gold jewellery and murder forming part of the same tra...,No,40.0%,Hit,0.50,Siamese Neural Network
+BQ-10,Police officer assaulted and removed in military vehicle during c...,No,20.0%,Hit,0.33,Siamese Neural Network
+BQ-11,Questioned handwriting document forwarded to Examiner of Question...,No,0.0%,Miss,0.00,Siamese Neural Network
+BQ-12,Trial judge failed to direct jury on matters in favour of accused...,No,20.0%,Hit,0.33,Siamese Neural Network
+BQ-13,Search warrant issued by Magistrate on credible information chall...,No,80.0%,Hit,0.50,Siamese Neural Network
+BQ-14,Corroboration of mother evidence in maintenance proceedings conce...,Yes,80.0%,Hit,1.00,Siamese Neural Network
+BQ-15,Application for revision in Court of Appeal against order of High...,No,60.0%,Hit,0.33,Siamese Neural Network
