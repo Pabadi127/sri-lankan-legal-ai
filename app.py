@@ -148,7 +148,13 @@ tab_search, tab_analytics = st.tabs([
     "📚 Browse the Database"
 ])
 
-def render_case_result(res):
+def render_case_result(res: dict) -> None:
+    \"\"\"
+    Renders a single case result in the Streamlit UI using native container components.
+    
+    Args:
+        res (dict): A dictionary containing the case metadata, similarity score, and facts.
+    \"\"\"
     # Using Native Streamlit components for a flawless, responsive layout
     with st.container(border=True):
         st.markdown(f"### {res['rank']}. {res['case_name']}")
