@@ -24,13 +24,13 @@ st.markdown("""
 
     /* Background Gradient */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
 
     /* Typography */
     h1, h2, h3 {
         font-family: 'Montserrat', sans-serif !important;
-        color: #2c3e50;
+        color: #f8fafc !important;
     }
     p, span, div, input, button, .stMarkdown {
         font-family: 'Open Sans', sans-serif;
@@ -40,7 +40,7 @@ st.markdown("""
     .main-header {
         font-size: 3rem;
         font-weight: 800;
-        color: #1a252f;
+        color: #ffffff !important;
         margin-bottom: 2rem;
         font-family: 'Montserrat', sans-serif !important;
     }
