@@ -13,55 +13,62 @@ from siamese_model import SiameseCaseRecommender
 # Page Configuration
 st.set_page_config(
     page_title="Legal AI Assistant",
-    page_icon="⚖️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling
+# Custom Styling (Gradient background, new fonts, popping metric cards, no emojis)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Open+Sans:wght@400;600&display=swap');
+
+    /* Background Gradient */
+    .stApp {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
 
     /* Typography */
     h1, h2, h3 {
-        font-family: 'Playfair Display', serif !important;
+        font-family: 'Montserrat', sans-serif !important;
+        color: #2c3e50;
     }
     p, span, div, input, button, .stMarkdown {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Open Sans', sans-serif;
     }
     
     /* Clean headers */
     .main-header {
         font-size: 3rem;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #1a252f;
         margin-bottom: 2rem;
-        font-family: 'Playfair Display', serif !important;
+        font-family: 'Montserrat', sans-serif !important;
     }
 
-    /* Metric/Toggle Buttons (Cards) */
+    /* Popping Metric/Toggle Buttons (Cards) */
     .metric-card {
-        background-color: var(--secondary-background-color);
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
         border-radius: 12px;
         padding: 24px;
         text-align: center;
-        border: 1px solid rgba(128, 128, 128, 0.2);
-        transition: transform 0.2s;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 2px solid #ffffff;
     }
     .metric-card:hover {
-        transform: translateY(-2px);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
     }
     .metric-value {
-        font-family: 'Inter', sans-serif;
-        font-size: 2.5rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2.8rem;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #ffffff !important;
         margin: 0;
     }
     .metric-label {
-        color: var(--text-color);
-        opacity: 0.7;
+        color: #ecf0f1 !important;
+        opacity: 0.9;
         font-size: 0.95rem;
         font-weight: 600;
         text-transform: uppercase;
@@ -96,39 +103,38 @@ SAMPLE_QUERIES = {
 with st.sidebar:
     st.markdown("""
         <div style="text-align: center; padding: 10px 0 20px 0;">
-            <div style="font-size: 3rem;">⚖️</div>
-            <h2 style="font-family: 'Playfair Display', serif; margin-top: 5px;">Legal AI Assistant</h2>
+            <h2 style="font-family: 'Montserrat', sans-serif; margin-top: 5px;">Legal AI Assistant</h2>
         </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("### How can I help?")
+    st.markdown("### Search Parameters")
 
     all_topics = ["All Areas of Law"] + sorted(list(corpus_df["Legal Topic / Law"].unique()))
     selected_topic = st.selectbox("Filter by Legal Domain", all_topics)
 
-    top_k = st.slider("How many cases should I find?", min_value=3, max_value=10, value=5)
+    top_k = st.slider("Number of cases to retrieve", min_value=3, max_value=10, value=5)
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Quick Examples")
-    scenario_pick = st.selectbox("Try a sample scenario:", list(SAMPLE_QUERIES.keys()))
+    scenario_pick = st.selectbox("Load a sample scenario:", list(SAMPLE_QUERIES.keys()))
 
 # Hero Section
-st.markdown('<div class="main-header">Hello! I\'m your Legal AI Assistant.</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">Legal AI Assistant</div>', unsafe_allow_html=True)
 
-# Top Metrics Row (Restored Toggle Buttons / Custom Cards)
+# Top Metrics Row (Popped up Toggle Buttons)
 m1, m2, m3 = st.columns(3)
 with m1:
     st.markdown(f'''
         <div class="metric-card">
             <p class="metric-value">{len(corpus_df)}</p>
-            <p class="metric-label">Cases Read</p>
+            <p class="metric-label">Cases Processed</p>
         </div>
     ''', unsafe_allow_html=True)
 with m2:
     st.markdown(f'''
         <div class="metric-card">
             <p class="metric-value">{corpus_df["Legal Topic / Law"].nunique()}</p>
-            <p class="metric-label">Legal Areas</p>
+            <p class="metric-label">Legal Domains</p>
         </div>
     ''', unsafe_allow_html=True)
 with m3:
@@ -144,8 +150,8 @@ st.divider()
 
 # Tabbed Layout
 tab_search, tab_analytics = st.tabs([
-    "🔍 Find Precedents",
-    "📚 Browse the Database"
+    "Find Precedents",
+    "Browse the Database"
 ])
 
 def render_case_result(res: dict) -> None:
@@ -166,9 +172,9 @@ def render_case_result(res: dict) -> None:
         col3.caption(f"**Domain:** {res['legal_topic']}")
         col4.caption(f"**Court:** {res['court_no']}")
         
-        st.markdown(f"> **What happened:** {res['case_facts'][:450]}...")
+        st.markdown(f"> **Case Summary:** {res['case_facts'][:450]}...")
         
-        with st.expander("Read my full analysis of this judgment"):
+        with st.expander("View Full Case Analysis"):
             st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
             st.divider()
             st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
@@ -210,37 +216,37 @@ def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
 # TAB 1: Search & Recommendation
 with tab_search:
     st.write("")
-    st.subheader("Tell me about your case")
+    st.subheader("Factual Description")
     default_text = SAMPLE_QUERIES.get(scenario_pick, "") if scenario_pick != "Select a scenario..." else ""
     
     user_query = st.text_area(
-        "Describe what happened (the facts, the crime, or the legal issue you want me to look into):",
+        "Enter the facts of the case, statutory offenses, or the legal issue:",
         value=default_text,
         height=150,
         placeholder="Example: The accused was caught with narcotics at the airport, but claims they didn't know it was in their bag...",
         label_visibility="collapsed"
     )
 
-    search_clicked = st.button("Find Similar Cases", use_container_width=True, type="primary")
+    search_clicked = st.button("Search Precedents", use_container_width=True, type="primary")
 
     if (search_clicked or default_text) and user_query.strip():
         cat_filter = None if selected_topic == "All Areas of Law" else selected_topic
         results = hybrid_search(user_query, top_k=top_k, topic_filter=cat_filter)
 
         st.write("")
-        st.subheader("Here are the most relevant cases I found:")
+        st.subheader("Relevant Historical Precedents:")
         st.write("")
 
         if results:
             for res in results:
                 render_case_result(res)
         else:
-            st.warning("I couldn't find any historical cases matching that description. Try writing it differently or clearing the legal domain filter.")
+            st.warning("No historical cases matching that description were found. Try modifying the input or clearing the legal domain filter.")
 
 # TAB 2: Corpus Database Explorer
 with tab_analytics:
     st.write("")
-    st.subheader("Browse the Database")
+    st.subheader("Corpus Explorer")
     filter_txt = st.text_input("Type a keyword or case name to search the entire database:", label_visibility="collapsed", placeholder="Search by keyword, case name, or domain...")
     
     filtered_df = corpus_df
