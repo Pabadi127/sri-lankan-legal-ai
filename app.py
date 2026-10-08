@@ -24,7 +24,7 @@ st.markdown("""
 
     /* Background Gradient */
     .stApp {
-        background: linear-gradient(135deg, #020b1a 0%, #0a214d 100%);
+        background: linear-gradient(135deg, #01040a 0%, #030d1c 100%);
     }
 
     /* Typography */
@@ -47,13 +47,13 @@ st.markdown("""
 
     /* Popping Metric/Toggle Buttons (Cards) */
     .metric-card {
-        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        background: linear-gradient(135deg, #0c1627 0%, #17325c 100%);
         border-radius: 12px;
         padding: 24px;
         text-align: center;
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
         transition: transform 0.2s, box-shadow 0.2s;
-        border: 2px solid #ffffff;
+        border: 2px solid #2a4365;
     }
     .metric-card:hover {
         transform: translateY(-4px);
