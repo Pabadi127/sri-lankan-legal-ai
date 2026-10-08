@@ -173,8 +173,18 @@ def render_case_result(res: dict) -> None:
             st.divider()
             st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
 
-def hybrid_search(query, top_k=5, topic_filter=None):
-    """Combines Siamese neural semantic scores (40%) and TF-IDF lexical scores (60%)."""
+def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
+    """
+    Combines Siamese neural semantic scores (40%) and TF-IDF lexical scores (60%).
+    
+    Args:
+        query (str): The user's input legal scenario.
+        top_k (int): Number of top results to return.
+        topic_filter (str, optional): Filter results by a specific legal domain.
+        
+    Returns:
+        list: A sorted list of dictionaries containing the recommended cases.
+    """
     tfidf_res = {r["dataset_id"]: r for r in tfidf_engine.search(query, top_k=len(corpus_df), category_filter=topic_filter)}
     siamese_res = {r["dataset_id"]: r for r in siamese_engine.search(query, top_k=len(corpus_df), category_filter=topic_filter)}
 
