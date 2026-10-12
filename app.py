@@ -17,10 +17,28 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling (Gradient background, new fonts, popping metric cards, no emojis)
+# Custom Styling (Gradient background, new fonts, popping metric cards, no emojis, hidden top navigation header)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Open+Sans:wght@400;600&display=swap');
+
+    /* Completely hide Streamlit top header / navigation bar and footer */
+    header[data-testid="stHeader"], [data-testid="stHeader"], header {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0px !important;
+    }
+    #MainMenu {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    footer {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    .stApp > header {
+        display: none !important;
+    }
 
     /* Background Gradient */
     .stApp {
@@ -150,8 +168,8 @@ st.divider()
 
 # Tabbed Layout
 tab_search, tab_analytics = st.tabs([
-    "Find Precedents",
-    "Browse the Database"
+    "Find Cases",
+    "Browse Database"
 ])
 
 def render_case_result(res: dict) -> None:
@@ -165,16 +183,19 @@ def render_case_result(res: dict) -> None:
     with st.container(border=True):
         st.markdown(f"### {res['rank']}. {res['case_name']}")
         
-        # Tags / Metadata row
-        col1, col2, col3, col4 = st.columns(4)
+        # Tags / Metadata row with NLR number
+        col1, col2, col3, col4, col5 = st.columns(5)
         col1.caption(f"**Match:** {res['similarity_pct']}")
-        col2.caption(f"**Year:** {res['year']}")
-        col3.caption(f"**Domain:** {res['legal_topic']}")
-        col4.caption(f"**Court:** {res['court_no']}")
+        col2.caption(f"**NLR Number:** {res['dataset_id']}")
+        col3.caption(f"**Reporter:** {res['reporter']}")
+        col4.caption(f"**Domain:** {res['legal_topic']}")
+        col5.caption(f"**Court:** {res['court_no']}")
         
         st.markdown(f"> **Case Summary:** {res['case_facts'][:450]}...")
         
         with st.expander("View Full Case Analysis"):
+            st.markdown(f"**NLR Number / Citation:** {res['dataset_id']} ({res['reporter']})")
+            st.divider()
             st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
             st.divider()
             st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
@@ -216,7 +237,7 @@ def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
 # TAB 1: Search & Recommendation
 with tab_search:
     st.write("")
-    st.subheader("Factual Description")
+    st.subheader("Case Details")
     default_text = SAMPLE_QUERIES.get(scenario_pick, "") if scenario_pick != "Select a scenario..." else ""
     
     user_query = st.text_area(
@@ -227,14 +248,14 @@ with tab_search:
         label_visibility="collapsed"
     )
 
-    search_clicked = st.button("Search Precedents", use_container_width=True, type="primary")
+    search_clicked = st.button("Find Matching Cases", use_container_width=True, type="primary")
 
     if (search_clicked or default_text) and user_query.strip():
         cat_filter = None if selected_topic == "All Areas of Law" else selected_topic
         results = hybrid_search(user_query, top_k=top_k, topic_filter=cat_filter)
 
         st.write("")
-        st.subheader("Relevant Historical Precedents:")
+        st.subheader("Matching Cases:")
         st.write("")
 
         if results:
@@ -246,7 +267,7 @@ with tab_search:
 # TAB 2: Corpus Database Explorer
 with tab_analytics:
     st.write("")
-    st.subheader("Corpus Explorer")
+    st.subheader("Database Explorer")
     filter_txt = st.text_input("Type a keyword or case name to search the entire database:", label_visibility="collapsed", placeholder="Search by keyword, case name, or domain...")
     
     filtered_df = corpus_df
