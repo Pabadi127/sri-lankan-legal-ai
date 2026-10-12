@@ -17,81 +17,99 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling (Gradient background, new fonts, popping metric cards, no emojis, hidden top navigation header)
+# Custom Styling (Deep dark blue theme, glassmorphic accents, visible top navigation for theme toggle)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Open+Sans:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600&display=swap');
 
-    /* Completely hide Streamlit top header / navigation bar and footer */
-    header[data-testid="stHeader"], [data-testid="stHeader"], header {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0px !important;
+    /* Keep top header clean & transparent while preserving theme settings toggle */
+    header[data-testid="stHeader"] {
+        background: rgba(1, 4, 10, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
     }
-    #MainMenu {
-        visibility: hidden !important;
-        display: none !important;
-    }
-    footer {
-        visibility: hidden !important;
-        display: none !important;
-    }
-    .stApp > header {
-        display: none !important;
-    }
-
+    
     /* Background Gradient */
     .stApp {
-        background: linear-gradient(135deg, #01040a 0%, #030d1c 100%);
+        background: radial-gradient(circle at 15% 20%, #071938 0%, #01040a 65%, #020914 100%);
     }
 
     /* Typography */
     h1, h2, h3 {
         font-family: 'Montserrat', sans-serif !important;
         color: #f8fafc !important;
+        letter-spacing: -0.02em;
     }
     p, span, div, input, button, .stMarkdown {
         font-family: 'Open Sans', sans-serif;
     }
     
-    /* Clean headers */
+    /* Hero header */
     .main-header {
-        font-size: 3rem;
+        font-size: 3.2rem;
         font-weight: 800;
-        color: #ffffff !important;
-        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.4rem;
         font-family: 'Montserrat', sans-serif !important;
     }
+    
+    .hero-subtitle {
+        color: #94a3b8;
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        font-weight: 400;
+    }
 
-    /* Popping Metric/Toggle Buttons (Cards) */
+    /* Interactive Popping Metric Cards */
     .metric-card {
-        background: linear-gradient(135deg, #0c1627 0%, #17325c 100%);
-        border-radius: 12px;
-        padding: 24px;
+        background: linear-gradient(145deg, #0b1933 0%, #102a54 100%);
+        border-radius: 14px;
+        padding: 22px 18px;
         text-align: center;
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-        transition: transform 0.2s, box-shadow 0.2s;
-        border: 2px solid #2a4365;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.08);
+        transition: all 0.25s ease-in-out;
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        position: relative;
+        overflow: hidden;
     }
     .metric-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+        box-shadow: 0 16px 30px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(56, 189, 248, 0.22);
+        border-color: rgba(56, 189, 248, 0.6);
     }
     .metric-value {
         font-family: 'Montserrat', sans-serif;
         font-size: 2.8rem;
         font-weight: 800;
-        color: #ffffff !important;
+        color: #38bdf8 !important;
         margin: 0;
+        text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
     }
     .metric-label {
-        color: #ecf0f1 !important;
-        opacity: 0.9;
-        font-size: 0.95rem;
+        color: #cbd5e1 !important;
+        font-size: 0.9rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        margin-top: 8px;
+        margin-top: 6px;
+    }
+
+    /* Action button gradient */
+    .stButton>button {
+        background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+        padding: 0.75rem 2rem !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+        transition: all 0.2s ease !important;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -121,7 +139,8 @@ SAMPLE_QUERIES = {
 with st.sidebar:
     st.markdown("""
         <div style="text-align: center; padding: 10px 0 20px 0;">
-            <h2 style="font-family: 'Montserrat', sans-serif; margin-top: 5px;">Legal AI Assistant</h2>
+            <h2 style="font-family: 'Montserrat', sans-serif; margin-top: 5px; color: #38bdf8;">Legal AI Assistant</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem;">Sri Lankan Jurisprudence Engine</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -138,6 +157,7 @@ with st.sidebar:
 
 # Hero Section
 st.markdown('<div class="main-header">Legal AI Assistant</div>', unsafe_allow_html=True)
+st.markdown('<div class="hero-subtitle">Semantic Precedent Search across 771 Sri Lankan Criminal Law Judgments</div>', unsafe_allow_html=True)
 
 # Top Metrics Row (Popped up Toggle Buttons)
 m1, m2, m3 = st.columns(3)
@@ -168,33 +188,58 @@ st.divider()
 
 # Tabbed Layout
 tab_search, tab_analytics = st.tabs([
-    "Find Cases",
+    "Similar Case Laws",
     "Browse Database"
 ])
 
 def render_case_result(res: dict) -> None:
     """
-    Renders a single case result in the Streamlit UI using native container components.
-    
-    Args:
-        res (dict): A dictionary containing the case metadata, similarity score, and facts.
+    Renders a single case result in the Streamlit UI with an elevated card aesthetic.
     """
-    # Using Native Streamlit components for a flawless, responsive layout
     with st.container(border=True):
-        st.markdown(f"### {res['rank']}. {res['case_name']}")
+        col_title, col_badge = st.columns([4, 1])
+        with col_title:
+            st.markdown(f"### {res['rank']}. {res['case_name']}")
+        with col_badge:
+            st.markdown(
+                f"<div style='text-align: right; margin-top: 8px;'>"
+                f"<span style='background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);'>{res['similarity_pct']} Match</span>"
+                f"</div>",
+                unsafe_allow_html=True
+            )
         
-        # Tags / Metadata row with NLR number
-        col1, col2, col3, col4, col5 = st.columns(5)
-        col1.caption(f"**Match:** {res['similarity_pct']}")
-        col2.caption(f"**NLR Number:** {res['dataset_id']}")
-        col3.caption(f"**Reporter:** {res['reporter']}")
-        col4.caption(f"**Domain:** {res['legal_topic']}")
-        col5.caption(f"**Court:** {res['court_no']}")
+        # Tags / Metadata row with prominent NLR number
+        col1, col2, col3, col4 = st.columns(4)
+        col1.markdown(
+            f"<div style='background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<b>NLR No:</b> <span style='color: #38bdf8; font-weight: 700;'>{res['dataset_id']}</span>"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+        col2.markdown(
+            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<b>Reporter:</b> {res['reporter']}"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+        col3.markdown(
+            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<b>Domain:</b> {res['legal_topic']}"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+        col4.markdown(
+            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<b>Court:</b> {res['court_no']}"
+            f"</div>",
+            unsafe_allow_html=True
+        )
         
+        st.write("")
         st.markdown(f"> **Case Summary:** {res['case_facts'][:450]}...")
         
         with st.expander("View Full Case Analysis"):
-            st.markdown(f"**NLR Number / Citation:** {res['dataset_id']} ({res['reporter']})")
+            st.markdown(f"**NLR Number / Citation:** `{res['dataset_id']}` ({res['reporter']})")
             st.divider()
             st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
             st.divider()
@@ -203,14 +248,6 @@ def render_case_result(res: dict) -> None:
 def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
     """
     Combines Siamese neural semantic scores (40%) and TF-IDF lexical scores (60%).
-    
-    Args:
-        query (str): The user's input legal scenario.
-        top_k (int): Number of top results to return.
-        topic_filter (str, optional): Filter results by a specific legal domain.
-        
-    Returns:
-        list: A sorted list of dictionaries containing the recommended cases.
     """
     tfidf_res = {r["dataset_id"]: r for r in tfidf_engine.search(query, top_k=len(corpus_df), category_filter=topic_filter)}
     siamese_res = {r["dataset_id"]: r for r in siamese_engine.search(query, top_k=len(corpus_df), category_filter=topic_filter)}
@@ -248,14 +285,14 @@ with tab_search:
         label_visibility="collapsed"
     )
 
-    search_clicked = st.button("Find Matching Cases", use_container_width=True, type="primary")
+    search_clicked = st.button("Find Similar Case Laws", use_container_width=True, type="primary")
 
     if (search_clicked or default_text) and user_query.strip():
         cat_filter = None if selected_topic == "All Areas of Law" else selected_topic
         results = hybrid_search(user_query, top_k=top_k, topic_filter=cat_filter)
 
         st.write("")
-        st.subheader("Matching Cases:")
+        st.subheader("Similar Case Laws Found:")
         st.write("")
 
         if results:
