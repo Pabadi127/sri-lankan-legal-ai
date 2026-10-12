@@ -4,6 +4,7 @@ Interactive Streamlit Web Application for AI-Based Legal Case Law Recommendation
 """
 
 import os
+from datetime import datetime
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -17,15 +18,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling (Deep dark blue theme, glassmorphic accents, visible top navigation for theme toggle)
+# Initialize Session State for History & Active Query
+if "search_history" not in st.session_state:
+    st.session_state.search_history = []
+if "loaded_history_query" not in st.session_state:
+    st.session_state.loaded_history_query = ""
+
+# Custom Styling (Deep dark blue theme, glassmorphic accents, clean navigation header)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600&display=swap');
 
-    /* Keep top header clean & transparent while preserving theme settings toggle */
+    /* Keep header clean & transparent: hide Share, GitHub, Star, Edit, keeping ONLY the theme settings and sidebar toggle */
     header[data-testid="stHeader"] {
         background: rgba(1, 4, 10, 0.6) !important;
         backdrop-filter: blur(12px) !important;
+    }
+    
+    [data-testid="stToolbarActions"],
+    [data-testid="stHeader"] .stActionButton,
+    [data-testid="stHeader"] a,
+    [data-testid="manage-app-button"],
+    .stDeployButton,
+    button[title="Share this app"],
+    button[title="View source on GitHub"],
+    [data-testid="stStatusWidget"] {
+        display: none !important;
+        visibility: hidden !important;
     }
     
     /* Background Gradient */
@@ -155,6 +174,21 @@ with st.sidebar:
     st.markdown("### Quick Examples")
     scenario_pick = st.selectbox("Load a sample scenario:", list(SAMPLE_QUERIES.keys()))
 
+    st.markdown("---")
+    st.markdown("### History")
+    if st.session_state.search_history:
+        for idx, h_item in enumerate(reversed(st.session_state.search_history[-8:])):
+            short_q = h_item["query"][:28] + "..." if len(h_item["query"]) > 28 else h_item["query"]
+            if st.button(f"{short_q}", key=f"hist_sb_{idx}", help=f"{h_item['timestamp']}\n\n{h_item['query']}", use_container_width=True):
+                st.session_state.loaded_history_query = h_item["query"]
+                st.rerun()
+        if st.button("Clear History", key="clear_hist_btn", use_container_width=True):
+            st.session_state.search_history = []
+            st.session_state.loaded_history_query = ""
+            st.rerun()
+    else:
+        st.caption("No past searches yet.")
+
 # Hero Section
 st.markdown('<div class="main-header">Legal AI Assistant</div>', unsafe_allow_html=True)
 st.markdown('<div class="hero-subtitle">Semantic Precedent Search across 771 Sri Lankan Criminal Law Judgments</div>', unsafe_allow_html=True)
@@ -186,9 +220,10 @@ with m3:
 st.write("")
 st.divider()
 
-# Tabbed Layout
-tab_search, tab_analytics = st.tabs([
+# Tabbed Layout with dedicated History tab
+tab_search, tab_history, tab_analytics = st.tabs([
     "Similar Case Laws",
+    "History",
     "Browse Database"
 ])
 
@@ -275,7 +310,13 @@ def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
 with tab_search:
     st.write("")
     st.subheader("Case Details")
-    default_text = SAMPLE_QUERIES.get(scenario_pick, "") if scenario_pick != "Select a scenario..." else ""
+    
+    # Priority for query: Loaded from history > quick scenario pick > empty
+    default_text = ""
+    if st.session_state.loaded_history_query:
+        default_text = st.session_state.loaded_history_query
+    elif scenario_pick != "Select a scenario...":
+        default_text = SAMPLE_QUERIES.get(scenario_pick, "")
     
     user_query = st.text_area(
         "Enter the facts of the case, statutory offenses, or the legal issue:",
@@ -291,6 +332,15 @@ with tab_search:
         cat_filter = None if selected_topic == "All Areas of Law" else selected_topic
         results = hybrid_search(user_query, top_k=top_k, topic_filter=cat_filter)
 
+        # Record search query and results into session state history
+        clean_q = user_query.strip()
+        if not st.session_state.search_history or st.session_state.search_history[-1]["query"] != clean_q:
+            st.session_state.search_history.append({
+                "query": clean_q,
+                "timestamp": datetime.now().strftime("%b %d, %I:%M %p"),
+                "results": results
+            })
+
         st.write("")
         st.subheader("Similar Case Laws Found:")
         st.write("")
@@ -301,7 +351,31 @@ with tab_search:
         else:
             st.warning("No historical cases matching that description were found. Try modifying the input or clearing the legal domain filter.")
 
-# TAB 2: Corpus Database Explorer
+# TAB 2: Search History
+with tab_history:
+    st.write("")
+    st.subheader("Search History & Past Consultations")
+    
+    if not st.session_state.search_history:
+        st.info("No past searches recorded yet in this session. Search for any legal scenario in 'Similar Case Laws' to begin creating your consultation history.")
+    else:
+        st.markdown(f"**Total searches logged:** {len(st.session_state.search_history)}")
+        for idx, h_item in enumerate(reversed(st.session_state.search_history)):
+            with st.container(border=True):
+                col_h1, col_h2 = st.columns([4, 1])
+                with col_h1:
+                    st.markdown(f"**Consultation Query** `({h_item['timestamp']})`")
+                    st.markdown(f"> {h_item['query']}")
+                with col_h2:
+                    if st.button("Reload Query", key=f"reload_hist_{idx}", use_container_width=True):
+                        st.session_state.loaded_history_query = h_item["query"]
+                        st.rerun()
+                
+                with st.expander(f"View {len(h_item['results'])} Case Results Found"):
+                    for r in h_item["results"]:
+                        st.markdown(f"- **{r['case_name']} ({r['year']})** [{r['dataset_id']}] — *{r['similarity_pct']} match*")
+
+# TAB 3: Corpus Database Explorer
 with tab_analytics:
     st.write("")
     st.subheader("Database Explorer")
