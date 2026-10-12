@@ -220,10 +220,9 @@ with m3:
 st.write("")
 st.divider()
 
-# Tabbed Layout with dedicated History tab
-tab_search, tab_history, tab_analytics = st.tabs([
+# Tabbed Layout
+tab_search, tab_analytics = st.tabs([
     "Similar Case Laws",
-    "History",
     "Browse Database"
 ])
 
@@ -351,31 +350,7 @@ with tab_search:
         else:
             st.warning("No historical cases matching that description were found. Try modifying the input or clearing the legal domain filter.")
 
-# TAB 2: Search History
-with tab_history:
-    st.write("")
-    st.subheader("Search History & Past Consultations")
-    
-    if not st.session_state.search_history:
-        st.info("No past searches recorded yet in this session. Search for any legal scenario in 'Similar Case Laws' to begin creating your consultation history.")
-    else:
-        st.markdown(f"**Total searches logged:** {len(st.session_state.search_history)}")
-        for idx, h_item in enumerate(reversed(st.session_state.search_history)):
-            with st.container(border=True):
-                col_h1, col_h2 = st.columns([4, 1])
-                with col_h1:
-                    st.markdown(f"**Consultation Query** `({h_item['timestamp']})`")
-                    st.markdown(f"> {h_item['query']}")
-                with col_h2:
-                    if st.button("Reload Query", key=f"reload_hist_{idx}", use_container_width=True):
-                        st.session_state.loaded_history_query = h_item["query"]
-                        st.rerun()
-                
-                with st.expander(f"View {len(h_item['results'])} Case Results Found"):
-                    for r in h_item["results"]:
-                        st.markdown(f"- **{r['case_name']} ({r['year']})** [{r['dataset_id']}] — *{r['similarity_pct']} match*")
-
-# TAB 3: Corpus Database Explorer
+# TAB 2: Corpus Database Explorer
 with tab_analytics:
     st.write("")
     st.subheader("Database Explorer")
