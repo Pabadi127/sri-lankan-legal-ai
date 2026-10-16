@@ -1,199 +1,240 @@
-# Sri Lankan Legal Case Law Recommender (AI-Based Precedent Retrieval System)
+Sri Lankan Legal Case Law Recommender
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/)
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Academic%20Use-green.svg)](#)
-[![Architecture](https://img.shields.io/badge/Architecture-Hybrid%20AI%20(Siamese%20%2B%20TF--IDF)-purple.svg)](#system-architecture--ai-methodology)
+AI-Based Precedent Retrieval System
 
-An intelligent legal precedent retrieval system specifically designed for **Sri Lankan Criminal Jurisprudence**. The system allows law students, legal practitioners, and judicial researchers to input unstructured, natural language factual scenarios and instantly receive ranked historical precedents from the **New Law Reports (NLR)** and **Sri Lanka Law Reports (SLR)**.
+An AI-powered tool designed to help law students, legal professionals, and researchers find relevant past Sri Lankan criminal cases. Users can describe a legal situation in their own words and receive a ranked list of related judgments from the New Law Reports (NLR) and Sri Lanka Law Reports (SLR).
 
----
+Streamlit App · Python · System Architecture
 
-## Table of Contents
-1. [Project Background & Motivation](#project-background--motivation)
-2. [Live Application Access](#live-application-access)
-3. [Local Installation & Setup](#local-installation--setup)
-4. [Evaluator's Guide: How to Use the App](#evaluators-guide-how-to-use-the-app)
-5. [Sample Test Scenarios for Evaluation](#sample-test-scenarios-for-evaluation)
-6. [System Architecture & AI Methodology](#system-architecture--ai-methodology)
-7. [Corpus & Dataset Overview](#corpus--dataset-overview)
-8. [Repository Structure](#repository-structure)
+Table of Contents
 
----
+Project Background & Motivation
 
-## Project Background & Motivation
+Live Application Access
 
-In the Sri Lankan legal system, the principle of **stare decisis** (judicial precedent) requires advocates and judges to identify prior binding appellate decisions relevant to a current dispute. However, legal research in Sri Lanka remains predominantly manual:
-- Case law is distributed across hundreds of physical and digitized volumes of the **New Law Reports (NLR)** and **Sri Lanka Law Reports (SLR)**.
-- Standard keyword search tools fail when practitioners use different terminology to describe identical legal issues (e.g., *"car theft"* vs. *"dishonest misappropriation of a motor vehicle"*).
-- Traditional legal databases lack semantic comprehension of factual crime narratives.
+Local Installation & Setup
 
-**Our Solution:**  
-This project introduces a **Hybrid AI Precedent Retrieval Engine** that mathematically balances:
-1. **Semantic Meaning (Siamese Neural Network):** Understands the narrative and conceptual context of a crime.
-2. **Lexical Precision (TF-IDF Vectorization):** Captures exact statutory references (e.g., *Section 296 of the Penal Code*, *Section 75 of the Administration of Justice Law*).
+Evaluator's Guide: How to Use the App
 
-The user interface has been purposely streamlined for legal scholars and law students, eliminating technical jargon and presenting search results in structured precedent cards.
+Sample Test Scenarios for Evaluation
 
----
+System Architecture & AI Methodology
 
-## Live Application Access
+Corpus & Dataset Overview
 
-The application is deployed on **Streamlit Community Cloud** and is accessible directly from any web browser without local setup:
+Repository Structure
 
-> 🔗 **Live App URL:** [https://sri-lankan-legal-ai.streamlit.app/](https://sri-lankan-legal-ai.streamlit.app/) *(or via your Streamlit Cloud Dashboard)*
+Project Background & Motivation
 
----
+In Sri Lanka, lawyers and judges often need to find earlier court decisions that are relevant to a current case. This principle is known as stare decisis, or judicial precedent. However, legal research can take time because:
 
-## Local Installation & Setup
+Case judgments are spread across printed and digital copies of the New Law Reports (NLR) and Sri Lanka Law Reports (SLR).
 
-If you prefer to run and evaluate the application locally on your workstation, follow the steps below:
+A keyword search may miss relevant cases when the same issue is described using different words. For example, "car theft" and "dishonest misappropriation of a motor vehicle" may describe related legal situations.
 
-### Prerequisites
-- Python 3.9, 3.10, or 3.11 installed.
-- Git installed.
+Traditional search tools may not capture the meaning of the facts described in a case.
 
-### Step 1: Clone the Repository
-```bash
+Our Solution
+
+The project uses a hybrid AI approach that combines two methods:
+
+Siamese Neural Network: Compares the meaning and context of a user's description with existing cases.
+
+TF-IDF: Identifies important words and legal references, such as Section 296 of the Penal Code and Section 75 of the Administration of Justice Law.
+
+The interface is designed to be straightforward, presenting search results in organized case cards that are easy to review.
+
+Live Application Access
+
+The application is hosted on Streamlit Community Cloud and can be opened in a web browser without installing it locally.
+
+Live application: https://sri-lankan-legal-ai.streamlit.app/
+
+Local Installation & Setup
+
+To run the application on your computer, follow these steps.
+
+Prerequisites
+
+Python 3.9, 3.10, or 3.11
+
+Git
+
+Step 1: Clone the Repository
+
 git clone https://github.com/Pabadi127/sri-lankan-legal-ai.git
 cd sri-lankan-legal-ai
-```
 
-### Step 2: Install Required Dependencies
-All dependencies are minimal, lightweight, and pure-Python:
-```bash
+Step 2: Install the Required Packages
+
+Run:
+
 pip install -r requirements.txt
-```
-*(Dependencies: `streamlit`, `pandas`, `numpy`)*
 
-### Step 3: Launch the Application
-Run the Streamlit server:
-```bash
+The main dependencies are streamlit, pandas, and numpy.
+
+Step 3: Run the Application
+
+Start the Streamlit app with:
+
 streamlit run app.py
-```
-*(Windows users can also simply double-click `run_app.bat` located in the root folder).*
 
-Once started, the application will automatically open in your default browser at `http://localhost:8501`.
+On Windows, you can also run run_app.bat from the project folder.
 
----
+Once the app starts, it should open in your default browser at http://localhost:8501.
 
-## Evaluator's Guide: How to Use the App
+Evaluator's Guide: How to Use the App
 
-The user interface is structured into two main views:
+The application has two main sections.
 
-### 1. Precedent Retrieval (`Similar Case Laws` Tab)
-1. **Enter Case Facts:** In the **Case Details** text area, describe the factual situation, the incident, statutory violations, or legal issues in plain English.
-2. **(Optional) Filter by Legal Domain:** In the left sidebar, choose a specific legal domain (e.g., *Penal Code Offences*, *Bail Law & Remand*, *Narcotics & Dangerous Drugs*) or keep `"All Areas of Law"`.
-3. **(Optional) Select Top-K Results:** Adjust the slider to retrieve between 3 and 10 recommendations.
-4. **Click "Find Similar Case Laws":** The AI engine processes the input through both the TF-IDF and Siamese sub-models, blends the similarity scores, and presents the most relevant judgments.
-5. **Inspect Results:**
-   - **Similarity Match Badge:** Displays the calculated relevance score percentage.
-   - **NLR Citation / Dataset ID:** Prominently displays the official legal identifier (e.g., `NLR-80-013`).
-   - **Case Summary:** Provides a synthesized synopsis of the facts and disputed questions of law.
-   - **Detailed Holding:** Click **"View Full Case Analysis"** on any card to read the complete narrative and the court's judicial holding (*Ratio Decidendi*).
-6. **Consultation History (Sidebar):** Past searches in your session are automatically saved in the sidebar under **History**. Clicking any previous search will instantly reload the query and its results.
+1. Find Similar Cases (Similar Case Laws tab)
 
-### 2. Database Explorer (`Browse Database` Tab)
-- Provides a searchable database containing all **771 verified Sri Lankan criminal judgments**.
-- Includes real-time keyword filtering across Case Names, Facts, Legal Topics, and Court Case Numbers.
+Enter the case facts: In the Case Details box, describe the situation, incident, possible legal violations, or legal issues in plain English.
 
----
+Choose a legal area (optional): Use the sidebar to select an area, such as Penal Code Offences, Bail Law & Remand, or Narcotics & Dangerous Drugs. You can also leave the filter set to "All Areas of Law".
 
-## Sample Test Scenarios for Evaluation
+Choose how many results to show (optional): Use the slider to select between 3 and 10 results.
 
-Evaluators can test the system by loading the quick templates in the sidebar dropdown, or by copying and pasting any of the following standard test prompts into the **Case Details** box:
+Search: Click Find Similar Case Laws. The system checks the query using both the TF-IDF and Siamese Neural Network components, combines their scores, and ranks the results.
 
-#### Scenario A: Narcotics Concealment without Mens Rea (Poisons & Dangerous Drugs)
-> *"Accused was intercepted by customs at Bandaranaike International Airport carrying heroin concealed in a false bottom of luggage and shoes without mens rea or conscious knowledge."*
-> - **Expected Legal Topic:** Narcotics & Dangerous Drugs
-> - **Key Precedents Tested:** Airport narcotics concealment, conscious possession principles.
+Review the results:
 
-#### Scenario B: Circumstantial Evidence Murder Conviction (Penal Code Section 296)
-> *"The accused was convicted of murder under Section 296 based solely on circumstantial evidence, recovery of weapon under section 27, and having been seen last with the deceased."*
-> - **Expected Legal Topic:** Penal Code Offences / Murder & Evidence
-> - **Key Precedents Tested:** Evidentiary burden in circumstantial murder cases (*Section 27 Evidence Ordinance*).
+Similarity score: Shows the calculated match score for each result.
 
-#### Scenario C: Bail Remand Without Stating Grounds (Bail Law)
-> *"Magistrate made an order remanding the suspect in custody without stating grounds or recording reasons as required under Section 75."*
-> - **Expected Legal Topic:** Bail Law & Remand
-> - **Key Precedents Tested:** Procedural validity of magistrate remand orders under Section 75 of Administration of Justice Law.
+NLR citation / Dataset ID: Shows the case identifier, such as NLR-80-013.
 
----
+Case summary: Summarizes the facts and legal issues.
 
-## System Architecture & AI Methodology
+Detailed holding: Select View Full Case Analysis to read the case details and the court's decision (ratio decidendi).
 
-```
-User Legal Scenario (Factual Narrative)
-       │
-       ├───► [Lexical Matcher: Pure NumPy TF-IDF] ────► Lexical Score (60%)
-       │           (Sublinear TF, IDF, Unigrams/Bigrams)           │
-       │                                                           ▼
-       └───► [Semantic Matcher: Siamese Neural Net] ──► Semantic Score (40%)
-                   (128-dim Unit Hypersphere Manifold)             │
-                                                                   ▼
-                                                       Hybrid Score Combination
-                                                                   ▼
-                                                       Ranked Precedent Cards
-```
+View search history: Previous searches are saved in the sidebar for the current session. Select a past search to load it again with its results.
 
-### 1. Siamese Neural Network (Semantic AI)
-- **Architecture:** Twin feedforward subnetworks with shared weight matrices mapping high-dimensional vocabulary spaces into a dense **128-dimensional continuous latent space**.
-- **Loss Function:** Trained using **Contrastive Loss with Margin ($m = 1.0$)** on 3,000 balanced positive and negative case-fact pairs:
-  $$\mathcal{L} = \frac{1}{2} Y \cdot D^2 + \frac{1}{2} (1 - Y) \cdot \max(0, m - D)^2$$
-- **Pre-computed Embeddings:** All 771 corpus judgments are pre-embedded onto the unit hypersphere (`siamese_case_embeddings.pkl`) for real-time sub-millisecond similarity computation.
+2. Browse the Database (Browse Database tab)
 
-### 2. TF-IDF + Cosine Similarity (Lexical AI)
-- Vectorizes legal text using sublinear term frequency scaling ($1 + \log(TF)$) and inverse document frequency (IDF) across a calibrated vocabulary of 6,000 unigrams and bigrams.
-- Guarantees exact statutory numbers (e.g., *Section 296*, *Section 75*, *Section 27*) are given high mathematical weight.
+Search through all 771 verified Sri Lankan criminal judgments.
 
-### 3. Hybrid Blending Engine
-- Final similarity score is computed as:
-  $$\text{Final Score} = 0.60 \times \text{Score}_{\text{TF-IDF}} + 0.40 \times \text{Score}_{\text{Siamese}}$$
-- Combines the lexical precision of statutory references with the conceptual generalization of deep metric learning.
+Filter by case name, facts, legal topic, or court case number.
 
-### 4. Constraint Engineering (Pure NumPy Implementation)
-- In standard machine learning workflows, libraries such as `scikit-learn` or `PyTorch` rely on compiled C-extensions (e.g., `_cython_blas.pyd`). In restricted operating system environments (such as machines with strict Windows Defender or AppLocker policies), these DLLs can be blocked.
-- To guarantee **universal deployment and platform portability**, both the TF-IDF vectorizer and the Siamese Neural Network were implemented in **pure Python and NumPy**, ensuring flawless execution on any machine or cloud server.
+Sample Test Scenarios for Evaluation
 
----
+You can test the application using the example prompts below or select the quick templates in the sidebar. Enter a prompt in the Case Details box.
 
-## Corpus & Dataset Overview
+Scenario A: Narcotics Concealment and Knowledge
 
-| Metric | Corpus Value |
-| :--- | :--- |
-| **Total Verified Judgments** | 771 Cases |
-| **Jurisprudence Period** | 1974 – 2015 |
-| **Law Reporters Represented** | New Law Reports (NLR) & Sri Lanka Law Reports (SLR) |
-| **Canonical Legal Domains** | 7 Domains (Penal Code Offences, Narcotics, Bail Law, Bribery & Corruption, Criminal Procedure, Evidence, Prevention of Terrorism) |
-| **Contrastive Training Pairs** | 3,000 Pairs (1,500 Positive, 1,500 Negative) |
-| **Mean Reciprocal Rank (MRR)** | 0.8800 on 15 benchmark evaluation queries |
+"The accused was stopped by customs at Bandaranaike International Airport while carrying heroin hidden in a false bottom of luggage and in shoes. The accused claimed to have no knowledge of the drugs."
 
----
+Expected legal topic: Narcotics & Dangerous Drugs
 
-## Repository Structure
+What this tests: Cases involving concealed drugs and the question of whether the accused knew they were carrying them.
 
-```
+Scenario B: Murder Based on Circumstantial Evidence
+
+"The accused was convicted of murder under Section 296 based only on circumstantial evidence. The case included the recovery of a weapon under Section 27 and evidence that the accused was last seen with the deceased."
+
+Expected legal topic: Penal Code Offences / Murder & Evidence
+
+What this tests: Legal principles relating to circumstantial evidence in murder cases and Section 27 of the Evidence Ordinance.
+
+Scenario C: Remand Without Stated Reasons
+
+"A Magistrate ordered a suspect to remain in custody without stating the reasons for the decision, as required under Section 75."
+
+Expected legal topic: Bail Law & Remand
+
+What this tests: The legal requirements for giving reasons when ordering remand under Section 75 of the Administration of Justice Law.
+
+System Architecture & AI Methodology
+
+The system uses both keyword-based and meaning-based matching. It combines the results to rank relevant cases.
+
+User's Legal Scenario
+        |
+        +--> TF-IDF keyword matching ------> Lexical score (60%)
+        |
+        +--> Siamese Neural Network -------> Semantic score (40%)
+                                              |
+                                              v
+                                    Combined similarity score
+                                              |
+                                              v
+                                     Ranked case results
+
+1. Siamese Neural Network (Semantic Matching)
+
+How it works: Two matching neural-network branches turn text into comparable numerical representations in a shared 128-dimensional space.
+
+Training: The network was trained using contrastive loss with a margin of 1.0 and 3,000 case-fact pairs: 1,500 similar pairs and 1,500 dissimilar pairs.
+
+Precomputed representations: The system stores representations for all 771 cases in siamese_case_embeddings.pkl, helping it compare cases quickly during a search.
+
+2. TF-IDF and Cosine Similarity (Keyword Matching)
+
+The system represents legal text using TF-IDF, with sublinear term-frequency scaling and inverse document frequency (IDF). The vocabulary contains 6,000 single words and two-word phrases.
+
+This helps give distinctive legal terms and references—such as Section 296, Section 75, and Section 27—greater importance during matching.
+
+3. Combining the Scores
+
+The final score combines the two matching methods:
+
+Final Score = (0.60 × TF-IDF Score) + (0.40 × Siamese Score)
+
+This gives more weight to exact legal terms while also considering the meaning of the user's description.
+
+4. A Lightweight Implementation
+
+The TF-IDF and Siamese Neural Network components were implemented using Python and NumPy. This kept the project lightweight and helped avoid relying on some external machine-learning libraries that can be difficult to install in restricted environments.
+
+Corpus & Dataset Overview
+
+Metric
+
+Details
+
+Verified judgments
+
+771 cases
+
+Year range
+
+1974–2015
+
+Law reports included
+
+New Law Reports (NLR) and Sri Lanka Law Reports (SLR)
+
+Legal categories
+
+7: Penal Code Offences, Narcotics, Bail Law, Bribery & Corruption, Criminal Procedure, Evidence, and Prevention of Terrorism
+
+Training pairs
+
+3,000 pairs: 1,500 similar and 1,500 dissimilar
+
+Mean Reciprocal Rank (MRR)
+
+0.8800 across 15 benchmark queries
+
+Repository Structure
+
 sri-lankan-legal-ai/
-├── app.py                             # Interactive Streamlit Web Application
-├── baseline_tfidf.py                  # Pure NumPy TF-IDF Vectorizer & Cosine Search Engine
-├── siamese_model.py                   # Pure NumPy Siamese Neural Network Architecture
-├── train_siamese.py                   # Siamese Training Pipeline (Adam Optimizer & Contrastive Loss)
-├── create_siamese_pairs.py            # Generates 3,000 Balanced Semantic Training Pairs
-├── data_preprocessing.py              # NLP Text Cleaning, Regex Extraction & Topic Mapping
-├── scraper_lankalaw.py                # Automated Web Scraper for NLR & SLR Appellate Decisions
-├── evaluate_models.py                 # Academic Benchmark Evaluation Suite (15 Test Queries)
-├── print_evidence.py                  # Utility Script to Format Model Outputs for Academic Reports
-├── requirements.txt                   # Minimal Python Dependencies
-├── run_app.bat                        # One-Click Windows Launch Script
+├── app.py                         # Streamlit web application
+├── baseline_tfidf.py              # TF-IDF and cosine-similarity search
+├── siamese_model.py               # Siamese Neural Network
+├── train_siamese.py               # Training process for the Siamese network
+├── create_siamese_pairs.py        # Creates 3,000 training pairs
+├── data_preprocessing.py          # Cleans text and maps legal topics
+├── scraper_lankalaw.py            # Collects case information from LankaLaw
+├── evaluate_models.py             # Tests retrieval using 15 benchmark queries
+├── print_evidence.py              # Formats model results for reports
+├── requirements.txt               # Required Python packages
+├── run_app.bat                    # Starts the app on Windows
 │
-├── cleaned_criminal_cases.csv         # Structured & Categorized Corpus (771 Cases)
-├── siamese_training_pairs.csv         # 3,000 Contrastive Pairs with Binary Ground Truth
-├── tfidf_baseline_model.pkl           # Pre-fitted TF-IDF Model Parameters
-└── siamese_case_embeddings.pkl        # 128-Dimensional Pre-computed Case Embeddings
-```
+├── cleaned_criminal_cases.csv     # Cleaned dataset of 771 cases
+├── siamese_training_pairs.csv     # 3,000 labeled training pairs
+├── tfidf_baseline_model.pkl       # Saved TF-IDF model data
+└── siamese_case_embeddings.pkl    # Saved representations of the 771 cases
 
----
+Academic Context
 
-## Academic Context
-
-Developed as part of the **Essentials of Artificial Intelligence** module (Semester 4), Faculty of Computing, **General Sir John Kotelawala Defence University (KDU)**.
+This project was developed for the Essentials of Artificial Intelligence module in Semester 4, Faculty of Computing, General Sir John Kotelawala Defence University (KDU).
