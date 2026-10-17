@@ -1,4 +1,4 @@
-# Sri Lankan Legal Case Law Recommender
+# AI-Based Legal Case Law Recommendation System Using Case Facts for Sri Lankan Criminal Law
 ### AI-Based Precedent Retrieval System
 
 An AI-powered tool designed to help law students, legal professionals, and researchers find relevant past Sri Lankan criminal cases. Users can describe a legal situation in their own words and receive a ranked list of related judgments from the **New Law Reports (NLR)** and **Sri Lanka Law Reports (SLR)**.
