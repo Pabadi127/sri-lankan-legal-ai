@@ -218,7 +218,3 @@ sri-lankan-legal-ai/
 ```
 
 ---
-
-## Academic Context
-
-This project was developed for the **Essentials of Artificial Intelligence** module in Semester 4, Faculty of Computing, **General Sir John Kotelawala Defence University (KDU)**.
