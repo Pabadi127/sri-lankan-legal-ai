@@ -42,8 +42,7 @@ The interface is designed to be straightforward, presenting search results in or
 ## Live Application Access
 
 The application is hosted on **Streamlit Community Cloud** and can be opened in a web browser without installing it locally.
-
-**Live application:** https://sri-lankan-legal-ai.streamlit.app/
+https://sri-lankan-legal-ai-ybx63nvsvogbunrkrrk7b7.streamlit.app/
 
 ---
 
