@@ -345,11 +345,33 @@ with tab_search:
         st.write("")
 
         if results:
+            # Display a summary of the recommendation results
+            summary_col1, summary_col2 = st.columns(2)
+
+            with summary_col1:
+                st.metric("Cases Recommended", len(results))
+
+            with summary_col2:
+                st.metric(
+                    "Highest Similarity",
+                    results[0]["similarity_pct"]
+                )
+
+            st.caption(
+                "Similarity scores indicate textual similarity, "
+                "not legal applicability or legal advice."
+            )
+
+            st.divider()
+
             for res in results:
                 render_case_result(res)
         else:
-            st.warning("No historical cases matching that description were found. Try modifying the input or clearing the legal domain filter.")
-
+            st.warning(
+                "No historical cases matching that description were found. "
+                "Try modifying the input or clearing the legal domain filter."
+            )
+        
 # TAB 2: Corpus Database Explorer
 with tab_analytics:
     st.write("")
