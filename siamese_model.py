@@ -19,7 +19,12 @@ from baseline_tfidf import tokenize, STOP_WORDS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 EMBEDDINGS_MODEL_PATH = os.path.join(BASE_DIR, "siamese_case_embeddings.pkl")
-CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")
+if os.path.exists(os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")):
+    CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")
+elif os.path.exists(os.path.join(BASE_DIR, "cleaned_criminal_cases_trimmed.csv")):
+    CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases_trimmed.csv")
+else:
+    CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")
 
 class SiameseProjectionNetwork:
     """
