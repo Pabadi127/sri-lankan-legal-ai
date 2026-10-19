@@ -12,8 +12,9 @@ import pandas as pd
 import numpy as np
 from collections import Counter
 
-CLEANED_DATA_PATH = "cleaned_criminal_cases.csv"
-MODEL_PATH = "tfidf_baseline_model.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")
+MODEL_PATH = os.path.join(BASE_DIR, "tfidf_baseline_model.pkl")
 
 # Standard English stopwords
 STOP_WORDS = {

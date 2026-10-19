@@ -17,8 +17,9 @@ import numpy as np
 import pandas as pd
 from baseline_tfidf import tokenize, STOP_WORDS
 
-EMBEDDINGS_MODEL_PATH = "siamese_case_embeddings.pkl"
-CLEANED_DATA_PATH = "cleaned_criminal_cases.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+EMBEDDINGS_MODEL_PATH = os.path.join(BASE_DIR, "siamese_case_embeddings.pkl")
+CLEANED_DATA_PATH = os.path.join(BASE_DIR, "cleaned_criminal_cases.csv")
 
 class SiameseProjectionNetwork:
     """
