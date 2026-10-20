@@ -18,7 +18,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize Session State for History & Active Query
+# Initialize Session State
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "user_name" not in st.session_state:
+    st.session_state.user_name = ""
 if "search_history" not in st.session_state:
     st.session_state.search_history = []
 if "loaded_history_query" not in st.session_state:
@@ -114,7 +118,7 @@ st.markdown("""
         margin-top: 6px;
     }
 
-    /* Action button gradient */
+    /* Primary Action Buttons */
     .stButton>button {
         background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%) !important;
         color: #ffffff !important;
@@ -130,8 +134,71 @@ st.markdown("""
         transform: translateY(-2px) !important;
         box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5) !important;
     }
+
+    /* Download Memo Button */
+    .stDownloadButton>button {
+        background: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid rgba(56, 189, 248, 0.4) !important;
+        color: #38bdf8 !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border-radius: 6px !important;
+        padding: 0.45rem 1.1rem !important;
+        transition: all 0.2s ease !important;
+    }
+    .stDownloadButton>button:hover {
+        background: rgba(56, 189, 248, 0.15) !important;
+        border-color: #38bdf8 !important;
+        color: #ffffff !important;
+    }
 </style>
 """, unsafe_allow_html=True)
+
+# -------------------------------------------------------------
+# LOGIN PORTAL (Displayed when user is not authenticated)
+# -------------------------------------------------------------
+if not st.session_state.logged_in:
+    col_l1, col_login, col_l2 = st.columns([1, 2, 1])
+    with col_login:
+        st.write("")
+        st.write("")
+        st.markdown('<div class="main-header" style="text-align: center; font-size: 2.6rem;">Legal AI Portal</div>', unsafe_allow_html=True)
+        st.markdown('<p style="text-align: center; color: #94a3b8; margin-bottom: 25px;">Sri Lankan Jurisprudence & Precedent Retrieval System</p>', unsafe_allow_html=True)
+        
+        with st.container(border=True):
+            st.markdown("### Practitioner & Student Sign In")
+            st.caption("Authorized access for academic evaluators, law students, and legal researchers.")
+            
+            login_user = st.text_input("Username or Academic Email", value="student@kdu.ac.lk")
+            login_pwd = st.text_input("Password", type="password", value="legalai2026")
+            
+            col_b1, col_b2 = st.columns(2)
+            with col_b1:
+                if st.button("Sign In", use_container_width=True):
+                    if login_user and login_pwd:
+                        st.session_state.logged_in = True
+                        st.session_state.user_name = login_user.split('@')[0].capitalize()
+                        st.rerun()
+                    else:
+                        st.error("Please enter valid credentials.")
+            with col_b2:
+                if st.button("Evaluator / Guest Access", use_container_width=True):
+                    st.session_state.logged_in = True
+                    st.session_state.user_name = "Academic Evaluator (Guest)"
+                    st.rerun()
+            
+            st.divider()
+            st.markdown(
+                "<div style='text-align: center; font-size: 0.8rem; color: #64748b;'>"
+                "<b>Evaluator Pass:</b> Click <i>Evaluator / Guest Access</i> to bypass authentication instantly."
+                "</div>",
+                unsafe_allow_html=True
+            )
+    st.stop()
+
+# -------------------------------------------------------------
+# AUTHENTICATED APPLICATION
+# -------------------------------------------------------------
 
 # Cache Models
 @st.cache_resource
@@ -156,8 +223,22 @@ SAMPLE_QUERIES = {
 
 # Sidebar Controls
 with st.sidebar:
+    st.markdown(f"""
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px; margin-bottom: 15px;">
+            <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Session Active</div>
+            <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem;">{st.session_state.user_name}</div>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    col_out1, col_out2 = st.columns([2, 1])
+    with col_out2:
+        if st.button("Sign Out", key="sign_out_btn", use_container_width=True):
+            st.session_state.logged_in = False
+            st.session_state.user_name = ""
+            st.rerun()
+
     st.markdown("""
-        <div style="text-align: center; padding: 10px 0 20px 0;">
+        <div style="text-align: center; padding: 5px 0 15px 0;">
             <h2 style="font-family: 'Montserrat', sans-serif; margin-top: 5px; color: #38bdf8;">Legal AI Assistant</h2>
             <p style="color: #94a3b8; font-size: 0.85rem;">Sri Lankan Jurisprudence Engine</p>
         </div>
@@ -226,9 +307,42 @@ tab_search, tab_analytics = st.tabs([
     "Browse Database"
 ])
 
+def generate_memo_text(res: dict) -> str:
+    """Formats a case recommendation into a structured legal research memo."""
+    return f"""================================================================================
+SRI LANKAN LEGAL CASE LAW RESEARCH MEMO
+Generated via Sri Lankan Legal AI Precedent Retrieval System
+Date: {datetime.now().strftime("%B %d, %Y - %I:%M %p")}
+================================================================================
+
+1. CASE IDENTIFICATION:
+   Case Title          : {res['case_name']}
+   Official Citation   : {res['dataset_id']} ({res['reporter']})
+   Year of Decision    : {res['year']}
+   Court & Case Record : {res['court_no']}
+   Legal Subject Area  : {res['legal_topic']}
+
+2. AI RELEVANCE EVALUATION:
+   Overall Match Score : {res['similarity_pct']}
+   Statutory Precision : {res.get('tfidf_pct', 'N/A')} (TF-IDF Weight: 60%)
+   Semantic Context    : {res.get('siamese_pct', 'N/A')} (Siamese NN Weight: 40%)
+
+3. FACTUAL SUMMARY & LEGAL ISSUES:
+{res['case_facts']}
+
+4. JUDICIAL HOLDING & COURT'S DECISION (RATIO DECIDENDI):
+{res['holding']}
+
+================================================================================
+DISCLAIMER: This memorandum is generated for academic and legal research purposes.
+Official verification with the New Law Reports / Sri Lanka Law Reports is advised.
+================================================================================
+"""
+
 def render_case_result(res: dict) -> None:
     """
-    Renders a single case result in the Streamlit UI with an elevated card aesthetic.
+    Renders a single case result in the Streamlit UI with an elevated card aesthetic,
+    AI score breakdown, and an Export Legal Research Memo button.
     """
     with st.container(border=True):
         col_title, col_badge = st.columns([4, 1])
@@ -272,12 +386,32 @@ def render_case_result(res: dict) -> None:
         st.write("")
         st.markdown(f"> **Case Summary:** {res['case_facts'][:450]}...")
         
-        with st.expander("View Full Case Analysis"):
-            st.markdown(f"**NLR Number / Citation:** `{res['dataset_id']}` ({res['reporter']})")
-            st.divider()
-            st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
-            st.divider()
-            st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
+        # Action row: Expander for analysis + Export Research Memo button
+        col_exp, col_dl = st.columns([3, 2])
+        with col_exp:
+            with st.expander("View Full Case Analysis & Holding"):
+                st.markdown(f"**NLR Number / Citation:** `{res['dataset_id']}` ({res['reporter']})")
+                st.divider()
+                st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
+                st.divider()
+                st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
+                st.divider()
+                st.markdown(
+                    f"**AI Score Composition:**<br>"
+                    f"• Statutory Precision (TF-IDF 60%): `{res.get('tfidf_pct', 'N/A')}`<br>"
+                    f"• Semantic Context (Siamese NN 40%): `{res.get('siamese_pct', 'N/A')}`",
+                    unsafe_allow_html=True
+                )
+        with col_dl:
+            memo_content = generate_memo_text(res)
+            st.download_button(
+                label="Export Legal Research Memo",
+                data=memo_content,
+                file_name=f"Legal_Memo_{res['dataset_id']}.txt",
+                mime="text/plain",
+                key=f"dl_memo_{res['dataset_id']}_{res['rank']}",
+                use_container_width=True
+            )
 
 def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
     """
@@ -298,6 +432,8 @@ def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
         rec = dict(base_record)
         rec["similarity_score"] = round(final_score, 4)
         rec["similarity_pct"] = f"{round(final_score * 100, 1)}%"
+        rec["tfidf_pct"] = f"{round(t_score * 100, 1)}%"
+        rec["siamese_pct"] = f"{round(s_score * 100, 1)}%"
         combined.append(rec)
 
     combined.sort(key=lambda x: x["similarity_score"], reverse=True)
@@ -358,7 +494,7 @@ with tab_search:
                 )
 
             st.caption(
-                "Similarity scores indicate textual similarity, "
+                "Similarity scores indicate textual and semantic similarity, "
                 "not legal applicability or legal advice."
             )
 
