@@ -123,16 +123,24 @@ st.markdown("""
         background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%) !important;
         color: #ffffff !important;
         font-weight: 700 !important;
-        font-size: 1.05rem !important;
-        padding: 0.75rem 2rem !important;
+        font-size: 1rem !important;
+        padding: 0.6rem 1.25rem !important;
         border-radius: 8px !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
         transition: all 0.2s ease !important;
+        white-space: nowrap !important;
     }
     .stButton>button:hover {
         transform: translateY(-2px) !important;
         box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5) !important;
+    }
+
+    /* Sidebar Specific Button Styling */
+    section[data-testid="stSidebar"] .stButton>button {
+        padding: 0.45rem 0.9rem !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
     }
 
     /* Download Memo Button */
@@ -224,18 +232,16 @@ SAMPLE_QUERIES = {
 # Sidebar Controls
 with st.sidebar:
     st.markdown(f"""
-        <div style="background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px; margin-bottom: 15px;">
-            <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Session Active</div>
-            <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem;">{st.session_state.user_name}</div>
+        <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(56, 189, 248, 0.22); border-radius: 8px; padding: 10px 14px; margin-bottom: 8px;">
+            <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Current Session</div>
+            <div style="font-weight: 700; color: #38bdf8; font-size: 0.92rem;">{st.session_state.user_name}</div>
         </div>
     """, unsafe_allow_html=True)
     
-    col_out1, col_out2 = st.columns([2, 1])
-    with col_out2:
-        if st.button("Sign Out", key="sign_out_btn", use_container_width=True):
-            st.session_state.logged_in = False
-            st.session_state.user_name = ""
-            st.rerun()
+    if st.button("Sign Out", key="sign_out_btn", use_container_width=True):
+        st.session_state.logged_in = False
+        st.session_state.user_name = ""
+        st.rerun()
 
     st.markdown("""
         <div style="text-align: center; padding: 5px 0 15px 0;">
