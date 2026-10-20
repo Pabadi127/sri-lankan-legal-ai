@@ -57,7 +57,7 @@ st.markdown("""
     }
 
     /* Typography */
-    h1, h2, h3 {
+    h1, h2, h3, h4 {
         font-family: 'Montserrat', sans-serif !important;
         color: #f8fafc !important;
         letter-spacing: -0.02em;
@@ -321,16 +321,12 @@ Date: {datetime.now().strftime("%B %d, %Y - %I:%M %p")}
    Year of Decision    : {res['year']}
    Court & Case Record : {res['court_no']}
    Legal Subject Area  : {res['legal_topic']}
+   Relevance Match     : {res['similarity_pct']}
 
-2. AI RELEVANCE EVALUATION:
-   Overall Match Score : {res['similarity_pct']}
-   Statutory Precision : {res.get('tfidf_pct', 'N/A')} (TF-IDF Weight: 60%)
-   Semantic Context    : {res.get('siamese_pct', 'N/A')} (Siamese NN Weight: 40%)
-
-3. FACTUAL SUMMARY & LEGAL ISSUES:
+2. FACTUAL SUMMARY & LEGAL ISSUES:
 {res['case_facts']}
 
-4. JUDICIAL HOLDING & COURT'S DECISION (RATIO DECIDENDI):
+3. JUDICIAL HOLDING & COURT'S DECISION (RATIO DECIDENDI):
 {res['holding']}
 
 ================================================================================
@@ -341,43 +337,44 @@ Official verification with the New Law Reports / Sri Lanka Law Reports is advise
 
 def render_case_result(res: dict) -> None:
     """
-    Renders a single case result in the Streamlit UI with an elevated card aesthetic,
-    AI score breakdown, and an Export Legal Research Memo button.
+    Renders a single case result in the Streamlit UI with a clean, properly aligned card aesthetic
+    and an Export Legal Research Memo button.
     """
     with st.container(border=True):
-        col_title, col_badge = st.columns([4, 1])
+        # Header Row: Title & Similarity Badge with proper vertical alignment
+        col_title, col_badge = st.columns([3.8, 1.2])
         with col_title:
             st.markdown(f"### {res['rank']}. {res['case_name']}")
         with col_badge:
             st.markdown(
-                f"<div style='text-align: right; margin-top: 8px;'>"
-                f"<span style='background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);'>{res['similarity_pct']} Match</span>"
+                f"<div style='text-align: right; padding-top: 4px;'>"
+                f"<span style='background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);'>{res['similarity_pct']} Match</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
         
-        # Tags / Metadata row with prominent NLR number
+        # Tags / Metadata row with consistent padding & alignment
         col1, col2, col3, col4 = st.columns(4)
         col1.markdown(
-            f"<div style='background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<div style='background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.22); border-radius: 6px; padding: 7px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
             f"<b>NLR No:</b> <span style='color: #38bdf8; font-weight: 700;'>{res['dataset_id']}</span>"
             f"</div>",
             unsafe_allow_html=True
         )
         col2.markdown(
-            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<div style='background: rgba(148, 163, 184, 0.08); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 6px; padding: 7px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
             f"<b>Reporter:</b> {res['reporter']}"
             f"</div>",
             unsafe_allow_html=True
         )
         col3.markdown(
-            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<div style='background: rgba(148, 163, 184, 0.08); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 6px; padding: 7px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
             f"<b>Domain:</b> {res['legal_topic']}"
             f"</div>",
             unsafe_allow_html=True
         )
         col4.markdown(
-            f"<div style='background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
+            f"<div style='background: rgba(148, 163, 184, 0.08); border: 1px solid rgba(148, 163, 184, 0.18); border-radius: 6px; padding: 7px 10px; font-size: 0.85rem; color: #e2e8f0;'>"
             f"<b>Court:</b> {res['court_no']}"
             f"</div>",
             unsafe_allow_html=True
@@ -386,32 +383,23 @@ def render_case_result(res: dict) -> None:
         st.write("")
         st.markdown(f"> **Case Summary:** {res['case_facts'][:450]}...")
         
-        # Action row: Expander for analysis + Export Research Memo button
-        col_exp, col_dl = st.columns([3, 2])
-        with col_exp:
-            with st.expander("View Full Case Analysis & Holding"):
-                st.markdown(f"**NLR Number / Citation:** `{res['dataset_id']}` ({res['reporter']})")
-                st.divider()
-                st.markdown(f"**Full Narrative Facts:**\n\n{res['case_facts']}")
-                st.divider()
-                st.markdown(f"**The Court's Decision (Holding):**\n\n{res['holding']}")
-                st.divider()
-                st.markdown(
-                    f"**AI Score Composition:**<br>"
-                    f"• Statutory Precision (TF-IDF 60%): `{res.get('tfidf_pct', 'N/A')}`<br>"
-                    f"• Semantic Context (Siamese NN 40%): `{res.get('siamese_pct', 'N/A')}`",
-                    unsafe_allow_html=True
-                )
-        with col_dl:
-            memo_content = generate_memo_text(res)
-            st.download_button(
-                label="Export Legal Research Memo",
-                data=memo_content,
-                file_name=f"Legal_Memo_{res['dataset_id']}.txt",
-                mime="text/plain",
-                key=f"dl_memo_{res['dataset_id']}_{res['rank']}",
-                use_container_width=True
-            )
+        # Clean Full-Width Expander for Case Details
+        with st.expander("View Full Case Analysis & Court Decision"):
+            st.markdown(f"**NLR Number / Official Citation:** `{res['dataset_id']}` ({res['reporter']})")
+            st.divider()
+            st.markdown(f"**Full Narrative Facts & Issues:**\n\n{res['case_facts']}")
+            st.divider()
+            st.markdown(f"**The Court's Decision (Holding / Ratio Decidendi):**\n\n{res['holding']}")
+            
+        # Clean Action Bar: Export Legal Research Memo button
+        memo_content = generate_memo_text(res)
+        st.download_button(
+            label="Export Legal Research Memo",
+            data=memo_content,
+            file_name=f"Legal_Memo_{res['dataset_id']}.txt",
+            mime="text/plain",
+            key=f"dl_memo_{res['dataset_id']}_{res['rank']}"
+        )
 
 def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
     """
@@ -432,8 +420,6 @@ def hybrid_search(query: str, top_k: int = 5, topic_filter: str = None) -> list:
         rec = dict(base_record)
         rec["similarity_score"] = round(final_score, 4)
         rec["similarity_pct"] = f"{round(final_score * 100, 1)}%"
-        rec["tfidf_pct"] = f"{round(t_score * 100, 1)}%"
-        rec["siamese_pct"] = f"{round(s_score * 100, 1)}%"
         combined.append(rec)
 
     combined.sort(key=lambda x: x["similarity_score"], reverse=True)
@@ -481,17 +467,14 @@ with tab_search:
         st.write("")
 
         if results:
-            # Display a summary of the recommendation results
+            # Clean summary metrics header
             summary_col1, summary_col2 = st.columns(2)
 
             with summary_col1:
                 st.metric("Cases Recommended", len(results))
 
             with summary_col2:
-                st.metric(
-                    "Highest Similarity",
-                    results[0]["similarity_pct"]
-                )
+                st.metric("Highest Similarity", results[0]["similarity_pct"])
 
             st.caption(
                 "Similarity scores indicate textual and semantic similarity, "
