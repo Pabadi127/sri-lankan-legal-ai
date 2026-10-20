@@ -175,7 +175,7 @@ if not st.session_state.logged_in:
         
         with st.container(border=True):
             st.markdown("### Practitioner & Student Sign In")
-            st.caption("Authorized access for academic evaluators, law students, and legal researchers.")
+            st.caption("Authorized access for law students, legal practitioners, and guests.")
             
             login_user = st.text_input("Username or Academic Email", value="student@kdu.ac.lk")
             login_pwd = st.text_input("Password", type="password", value="legalai2026")
@@ -190,15 +190,15 @@ if not st.session_state.logged_in:
                     else:
                         st.error("Please enter valid credentials.")
             with col_b2:
-                if st.button("Evaluator / Guest Access", use_container_width=True):
+                if st.button("Guest Access", use_container_width=True):
                     st.session_state.logged_in = True
-                    st.session_state.user_name = "Academic Evaluator (Guest)"
+                    st.session_state.user_name = "Guest"
                     st.rerun()
             
             st.divider()
             st.markdown(
                 "<div style='text-align: center; font-size: 0.8rem; color: #64748b;'>"
-                "<b>Evaluator Pass:</b> Click <i>Evaluator / Guest Access</i> to bypass authentication instantly."
+                "<b>Quick Pass:</b> Click <i>Guest Access</i> to explore without entering credentials."
                 "</div>",
                 unsafe_allow_html=True
             )
